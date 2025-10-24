@@ -15,21 +15,21 @@ polygon_str = st.text_input(
 )
 
 # Parse the polygon string
-def parse_polygon(polygon_str):
-    # Extract coordinates using regex
-    coords_str = re.search(r"\(\((.*?)\)\)", polygon_str).group(1)
-    coords = [tuple(map(float, pair.split())) for pair in coords_str.split(",")]
-    return coords
+# def parse_polygon(polygon_str):
+#     # Extract coordinates using regex
+#     coords_str = re.search(r"\(\((.*?)\)\)", polygon_str).group(1)
+#     coords = [tuple(map(float, pair.split())) for pair in coords_str.split(",")]
+#     return coords
 
 try:
     # Parse the input
     coords = parse_polygon(polygon_str)
     # st.write(coords)
     # Parse the polygon string into a Shapely Polygon object
-    # polygon = loads(polygon_str)
+    polygon = loads(polygon_str)
     
     # Extract the coordinates
-    # coords = list(polygon.exterior.coords)
+    coords = list(polygon.exterior.coords)
     # st.write(coords)
 
     # Create a folium map centered on the polygon
