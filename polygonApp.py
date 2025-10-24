@@ -30,7 +30,13 @@ try:
     
     # Extract the coordinates
     coords = list(polygon.exterior.coords)
-    st.write(coords)
+    # st.write(coords)
+    min_lat, max_lat, min_lon, max_lon=coords[0][1],coords[0][1],coords[0][0],coords[0][0]
+    for i, (lon,lat) in enumerate(coords):
+        if i>0:
+            min_lat, max_lat =min(lat, min_lat), max(lat, max_lat)
+            min_lon, max_lon=min(lon, min_lon), max(lon,max_lon)
+    st.write(f"min_lat, max_lat, min_lon, max_lon are: {min_lat, max_lat, min_lon, max_lon}")
 
     # Create a folium map centered on the polygon
     center_lat = sum(p[1] for p in coords) / len(coords)
