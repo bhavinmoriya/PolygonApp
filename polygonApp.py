@@ -10,7 +10,7 @@ st.title("Polygon Plotter")
 
 # Input for the polygon string
 polygon_str = st.text_input(
-    "Enter the polygon coordinates (e.g., POLYGON ((9.3270795 48.743215, ...))):",
+    "### Enter the polygon coordinates (e.g., POLYGON ((9.3270795 48.743215, ...))):",
     "POLYGON ((9.3270795 48.743215, 9.3270795 48.7460675, 9.321068 48.7460675, 9.321068 48.743215, 9.3270795 48.743215))"
 )
 
