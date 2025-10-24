@@ -30,7 +30,7 @@ try:
     
     # Extract the coordinates
     coords = list(polygon.exterior.coords)
-    # st.write(coords)
+    st.write(coords)
 
     # Create a folium map centered on the polygon
     center_lat = sum(p[1] for p in coords) / len(coords)
