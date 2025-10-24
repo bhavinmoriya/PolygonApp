@@ -36,7 +36,7 @@ try:
         if i>0:
             min_lat, max_lat =min(lat, min_lat), max(lat, max_lat)
             min_lon, max_lon=min(lon, min_lon), max(lon,max_lon)
-    st.write(f"min_lat, max_lat, min_lon, max_lon are: {min_lat, max_lat, min_lon, max_lon}")
+    st.write(f"### min_lat, max_lat, min_lon, max_lon are: {min_lat, max_lat, min_lon, max_lon}")
 
     # Create a folium map centered on the polygon
     center_lat = sum(p[1] for p in coords) / len(coords)
