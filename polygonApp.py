@@ -5,58 +5,81 @@ from streamlit_folium import st_folium
 import re
 from shapely.wkt import loads
 st.set_page_config(layout="wide")
+
 # Streamlit app title
-st.title("Polygon Plotter")
+st.title("Polygon Plotter - Up to 4 Polygons")
 
-# Input for the polygon string
-polygon_str = st.text_input(
-    "### Enter the polygon coordinates (e.g., POLYGON ((9.3270795 48.743215, ...))):",
-    "POLYGON ((9.3270795 48.743215, 9.3270795 48.7460675, 9.321068 48.7460675, 9.321068 48.743215, 9.3270795 48.743215))"
-)
+# Input for multiple polygons
+st.write("### Enter up to 4 polygon coordinates (one per text area):")
 
-# Parse the polygon string
-# def parse_polygon(polygon_str):
-#     # Extract coordinates using regex
-#     coords_str = re.search(r"\(\((.*?)\)\)", polygon_str).group(1)
-#     coords = [tuple(map(float, pair.split())) for pair in coords_str.split(",")]
-#     return coords
+polygon_inputs = []
+colors = ["blue", "red", "green", "orange"]
 
-try:
-    # Parse the input
-    # coords = parse_polygon(polygon_str)
-    # st.write(coords)
-    # Parse the polygon string into a Shapely Polygon object
-    polygon = loads(polygon_str)
+for i in range(4):
+    default_polygon = "POLYGON ((9.3270795 48.743215, 9.3270795 48.7460675, 9.321068 48.7460675, 9.321068 48.743215, 9.3270795 48.743215))" if i == 0 else ""
     
-    # Extract the coordinates
-    coords = list(polygon.exterior.coords)
-    # st.write(coords)
-    min_lat, max_lat, min_lon, max_lon=coords[0][1],coords[0][1],coords[0][0],coords[0][0]
-    for i, (lon,lat) in enumerate(coords):
-        if i>0:
-            min_lat, max_lat =min(lat, min_lat), max(lat, max_lat)
-            min_lon, max_lon=min(lon, min_lon), max(lon,max_lon)
-    st.write(f"### min_lat, max_lat, min_lon, max_lon are: {min_lat, max_lat, min_lon, max_lon}")
-
-    # Create a folium map centered on the polygon
-    center_lat = sum(p[1] for p in coords) / len(coords)
-    center_lon = sum(p[0] for p in coords) / len(coords)
-
-    m = folium.Map(
-        location=[center_lat, center_lon],
-        zoom_start=15,
-        # tiles="cartodb positron",
-        tiles="openstreetmap"
+    polygon_str = st.text_area(
+        f"Polygon {i+1} ({colors[i]}):",
+        value=default_polygon,
+        height=100,
+        key=f"polygon_{i}"
     )
+    
+    if polygon_str.strip():
+        polygon_inputs.append((polygon_str, colors[i]))
 
-    # Add the polygon to the map
-    folium.GeoJson(
-        Polygon(coords),
-        style_function=lambda x: {"fillColor": "blue", "color": "blue", "weight": 2, "fillOpacity": 0.2}
-    ).add_to(m)
+# Process all polygons
+if polygon_inputs:
+    try:
+        all_polygons = []
+        all_coords = []
+        
+        # Parse all polygons
+        for polygon_str, color in polygon_inputs:
+            polygon = loads(polygon_str)
+            coords = list(polygon.exterior.coords)
+            all_polygons.append((polygon, coords, color))
+            all_coords.extend(coords)
+        
+        # Calculate bounds for all polygons
+        if all_coords:
+            min_lat = min(coord[1] for coord in all_coords)
+            max_lat = max(coord[1] for coord in all_coords)
+            min_lon = min(coord[0] for coord in all_coords)
+            max_lon = max(coord[0] for coord in all_coords)
+            
+            st.write(f"### Bounds for all polygons: min_lat={min_lat:.6f}, max_lat={max_lat:.6f}, min_lon={min_lon:.6f}, max_lon={max_lon:.6f}")
+            
+            # Create a folium map centered on all polygons
+            center_lat = (min_lat + max_lat) / 2
+            center_lon = (min_lon + max_lon) / 2
 
-    # Display the map
-    st_folium(m, height=800, width=None)
+            m = folium.Map(
+                location=[center_lat, center_lon],
+                zoom_start=12,
+                tiles="openstreetmap"
+            )
 
-except Exception as e:
-    st.error(f"Error parsing polygon: {e}")
+            # Add each polygon to the map with different colors
+            for i, (polygon, coords, color) in enumerate(all_polygons):
+                folium.GeoJson(
+                    polygon,
+                    style_function=lambda x, c=color: {
+                        "fillColor": c, 
+                        "color": c, 
+                        "weight": 2, 
+                        "fillOpacity": 0.3
+                    },
+                    popup=f"Polygon {i+1}"
+                ).add_to(m)
+
+            # Display the map
+            st_folium(m, height=800, width=None)
+            
+            # Show summary
+            st.write(f"### Successfully plotted {len(all_polygons)} polygon(s)")
+            
+    except Exception as e:
+        st.error(f"Error parsing polygons: {e}")
+else:
+    st.info("Please enter at least one polygon to display on the map.")
