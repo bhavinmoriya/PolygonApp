@@ -23,7 +23,7 @@ polygon_str = st.text_input(
 
 try:
     # Parse the input
-    coords = parse_polygon(polygon_str)
+    # coords = parse_polygon(polygon_str)
     # st.write(coords)
     # Parse the polygon string into a Shapely Polygon object
     polygon = loads(polygon_str)
