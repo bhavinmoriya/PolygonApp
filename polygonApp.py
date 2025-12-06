@@ -6,6 +6,7 @@ import re
 from shapely.wkt import loads
 st.set_page_config(layout="wide")
 
+st.set_page_config(page_title="Polygon Plotter - Up to 4 Polygons")  # Unique browser tab title
 # Streamlit app title
 st.title("Polygon Plotter - Up to 4 Polygons")
 
