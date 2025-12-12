@@ -4,9 +4,9 @@ from shapely.geometry import Polygon
 from streamlit_folium import st_folium
 import re
 from shapely.wkt import loads
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
 
-st.set_page_config(page_title="Polygon Plotter - Up to 4 Polygons")  # Unique browser tab title
+st.set_page_config(page_title="Polygon Plotter - Up to 4 Polygons", layout="wide")  # Unique browser tab title
 # Streamlit app title
 st.title("Polygon Plotter - Up to 4 Polygons")
 
